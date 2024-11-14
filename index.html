@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NetSpeedTest</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Internet Speed Test</h1>
+    <button id="speedTestBtn" onclick="getSpeedTest()">Check Speed</button>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    async function getSpeedTest() {
+      const button = document.getElementById('speedTestBtn');
+      const result = document.getElementById('result');
+
+      // Disable the button and show loading message
+      button.disabled = true;
+      result.innerText = "Testing...";
+
+      try {
+        const response = await fetch('http://127.0.0.1:5000/api/speed-test');
+        
+        if (!response.ok) throw new Error("Network response was not ok");
+        
+        const data = await response.json();
+        result.innerHTML = `
+          Download Speed: ${data.download_speed} Mbps <br>
+          Upload Speed: ${data.upload_speed} Mbps <br>
+          Ping: ${data.ping} ms
+        `;
+      } catch (error) {
+        console.error('Error:', error);
+        result.innerText = "Error fetching speed data.";
+      } finally {
+        button.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
